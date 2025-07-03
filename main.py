@@ -175,9 +175,11 @@ def update_change(event):
             new_cashbox[denom] = current_digit
         cashbox_history.append(new_cashbox)
         listbox.insert(tk.END, new_cashbox)
+        entry.delete(0, tk.END)
         go_back(event, 'calculate')
         for denom in DENOMS:
             all_column_labels[denom][3].config(text=change[denom])
+            all_column_labels[denom][1].config(text=0)
     else:
         change_sum = 0
         alarm_label.grid(row=0, column=7)
