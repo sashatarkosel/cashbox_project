@@ -99,6 +99,11 @@ def create_labels():
     count_label = tk.Label(root, text=f'{cnt}/{all_cnt}', font=("Arial", 20), relief='solid')
     count_label.grid(row=11, column=4)
 
+    tk.Button(root, text='Удалить', font=("Arial", 18), relief="solid", borderwidth=2, bg='red', activebackground='darkred', 
+            command=delete_listbox_element).grid(row=4, column=6)
+        
+    tk.Button(root, text='Изменить кассу', font=('Arial', 18), relief='solid', borderwidth=2, command=show_new_cashbox_window).grid(row=5, column=6)
+
     entry = tk.Entry(root, font=("Arial", 18), width=12)
     entry.grid(row=11, column=0, columnspan=3, rowspan=1)
     
@@ -121,11 +126,6 @@ def create_labels():
 
         tk.Button(root, text='-', font=("Arial", 14), relief="solid", borderwidth=1, width=4, height=1*k, command=lambda d=denom: plus_one('-', d)).grid(row=idx, column=0)
         tk.Button(root, text='+', font=("Arial", 14), relief="solid", borderwidth=1, width=4, height=1*k, command=lambda d=denom: plus_one("+", d)).grid(row=idx, column=2)
-
-        tk.Button(root, text='Удалить', font=("Arial", 18), relief="solid", borderwidth=2, bg='red', activebackground='darkred', 
-                  command=delete_listbox_element).grid(row=4, column=6)
-        
-        tk.Button(root, text='Изменить кассу', font=('Arial', 18), relief='solid', borderwidth=2, command=show_new_cashbox_window).grid(row=5, column=6)
 
 def calculate_change(amount): 
     result = {d: 0 for d in DENOMS}  # Инициализируем словарь с нулями
@@ -170,16 +170,18 @@ def update_change(event):
         alarm_label.grid_forget()
         change_sum = dict_sum(change)
         new_cashbox = {d:0 for d in DENOMS}
+        user_input_label.config(text=f'Покупатель дал: 0')
         for denom in DENOMS:
             current_digit = cashbox[denom] - change[denom] + user_input[denom]
             new_cashbox[denom] = current_digit
+            all_column_labels[denom][3].config(text=change[denom])
+            all_column_labels[denom][1].config(text=0)
+            user_input[denom] = 0
         cashbox_history.append(new_cashbox)
         listbox.insert(tk.END, new_cashbox)
         entry.delete(0, tk.END)
         go_back(event, 'calculate')
-        for denom in DENOMS:
-            all_column_labels[denom][3].config(text=change[denom])
-            all_column_labels[denom][1].config(text=0)
+
     else:
         change_sum = 0
         alarm_label.grid(row=0, column=7)
